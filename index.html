@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <base target="_top">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Monthly Orders Dashboard</title>
+  <title>ShipStation Monthly Orders Dashboard</title>
   <style>
     * {
       margin: 0;
@@ -79,12 +78,22 @@
       background: #667eea;
       color: white;
       border: none;
+      font-weight: 600;
     }
 
     .controls button:hover {
       background: #5568d3;
       transform: translateY(-2px);
       box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .controls button.current-month {
+      background: #10b981;
+      border-color: #10b981;
+    }
+
+    .controls button.current-month:hover {
+      background: #059669;
     }
 
     .view-toggle {
@@ -101,6 +110,7 @@
       border-radius: 8px;
       cursor: pointer;
       transition: all 0.3s;
+      font-weight: 600;
     }
 
     .view-btn.active {
@@ -142,19 +152,6 @@
       font-weight: bold;
     }
 
-    .stat-change {
-      margin-top: 10px;
-      font-size: 0.9em;
-    }
-
-    .stat-change.positive {
-      color: #10b981;
-    }
-
-    .stat-change.negative {
-      color: #ef4444;
-    }
-
     .calendar-view {
       background: white;
       padding: 30px;
@@ -179,35 +176,16 @@
       font-size: 1.8em;
     }
 
-    .calendar-nav {
-      display: flex;
-      gap: 10px;
-    }
-
-    .calendar-nav button {
-      padding: 10px 20px;
-      background: #667eea;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 1em;
-    }
-
-    .calendar-nav button:hover {
-      background: #5568d3;
-    }
-
     .calendar-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
       gap: 20px;
     }
 
     .month-card {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
-      padding: 20px;
+      padding: 25px;
       border-radius: 10px;
       cursor: pointer;
       transition: all 0.3s;
@@ -215,25 +193,26 @@
       overflow: hidden;
     }
 
+    .month-card.current-month {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      border: 3px solid #fff;
+      box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
+    }
+
+    .month-card.current-month .month-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(255, 255, 255, 0.3);
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.8em;
+      font-weight: bold;
+    }
+
     .month-card:hover {
       transform: scale(1.05);
       box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
-    }
-
-    .month-card::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-      transition: all 0.5s;
-    }
-
-    .month-card:hover::before {
-      top: -25%;
-      left: -25%;
     }
 
     .month-name {
@@ -243,12 +222,15 @@
     }
 
     .month-stats {
-      font-size: 0.9em;
+      font-size: 0.95em;
       opacity: 0.95;
     }
 
     .month-stats div {
-      margin: 5px 0;
+      margin: 8px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     .chart-view {
@@ -260,7 +242,7 @@
 
     .chart-container {
       width: 100%;
-      height: 400px;
+      height: 450px;
       margin-top: 20px;
     }
 
@@ -358,6 +340,32 @@
       font-size: 1.5em;
       font-weight: bold;
     }
+
+    .error {
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      text-align: center;
+      color: #ef4444;
+    }
+
+    .error h2 {
+      margin-bottom: 15px;
+    }
+
+    .error p {
+      color: #666;
+      line-height: 1.6;
+    }
+
+    .error code {
+      background: #f8f9fa;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-family: monospace;
+      color: #333;
+    }
   </style>
 </head>
 <body>
@@ -373,6 +381,7 @@
         <option value="all">All Years</option>
       </select>
       
+      <button onclick="jumpToCurrentMonth()" class="current-month">📅 Current Month</button>
       <button onclick="refreshData()">🔄 Refresh Data</button>
       
       <div class="view-toggle">
@@ -392,7 +401,7 @@
       <div id="calendarGrid" class="calendar-grid"></div>
     </div>
 
-    <div id="chartView" class="chart-view">
+    <div id="chartView" class="chart-view" style="display: none;">
       <h2 style="color: #667eea; margin-bottom: 20px;">Monthly Orders Trends</h2>
       <canvas id="ordersChart" class="chart-container"></canvas>
     </div>
@@ -407,9 +416,15 @@
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
+    // Your Google Sheet ID
+    const SHEET_ID = '1fuXYhSNqwFA7nB9k3Nqd_Epp1BV8ZYlTi9JRm98KtNU';
+    
     let allData = [];
     let currentView = 'calendar';
     let chart = null;
+    const currentDate = new Date();
+    const currentMonth = currentDate.toLocaleString('default', { month: 'long' });
+    const currentYear = currentDate.getFullYear();
 
     // Load data on page load
     window.onload = function() {
@@ -419,10 +434,34 @@
     function loadData() {
       document.getElementById('loading').style.display = 'block';
       
-      google.script.run
-        .withSuccessHandler(displayData)
-        .withFailureHandler(handleError)
-        .getMonthlyData();
+      const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Orders%20by%20Month`;
+      
+      fetch(url)
+        .then(response => response.text())
+        .then(text => {
+          // Remove Google's JSONP wrapper
+          const json = text.substring(47).slice(0, -2);
+          const data = JSON.parse(json);
+          
+          const rows = data.table.rows;
+          const processedData = rows.map(row => ({
+            month: row.c[0]?.v || '',
+            year: row.c[1]?.v || 0,
+            ordersPlaced: row.c[2]?.v || 0,
+            ordersFulfilled: row.c[3]?.v || 0,
+            totalItems: row.c[4]?.v || 0,
+            uniqueCustomers: row.c[5]?.v || 0,
+            avgItemsPerOrder: row.c[6]?.v || 0,
+            fulfillmentRate: row.c[7]?.v || '',
+            topProduct: row.c[8]?.v || 'N/A',
+            lastUpdated: row.c[9]?.v || ''
+          }));
+          
+          displayData(processedData);
+        })
+        .catch(error => {
+          handleError(error);
+        });
     }
 
     function displayData(data) {
@@ -430,7 +469,13 @@
       allData = data;
       
       if (data.length === 0) {
-        alert('No data found. Please run "Pull All Monthly Data" first.');
+        document.getElementById('loading').innerHTML = `
+          <div class="error">
+            <h2>❌ No Data Found</h2>
+            <p>Please run "Pull All Monthly Data" from your Google Sheet first.</p>
+          </div>
+        `;
+        document.getElementById('loading').style.display = 'block';
         return;
       }
 
@@ -494,17 +539,21 @@
       grid.innerHTML = '';
 
       data.forEach(month => {
+        const isCurrentMonth = month.month === currentMonth && month.year === currentYear;
+        
         const card = document.createElement('div');
-        card.className = 'month-card';
+        card.className = 'month-card' + (isCurrentMonth ? ' current-month' : '');
         card.onclick = () => showMonthDetail(month);
+        card.id = `month-${month.month}-${month.year}`;
         
         card.innerHTML = `
+          ${isCurrentMonth ? '<div class="month-badge">CURRENT</div>' : ''}
           <div class="month-name">${month.month} ${month.year}</div>
           <div class="month-stats">
-            <div>📦 ${month.ordersPlaced} orders placed</div>
-            <div>✅ ${month.ordersFulfilled} fulfilled</div>
-            <div>📊 ${month.totalItems} items shipped</div>
-            <div>👥 ${month.uniqueCustomers} customers</div>
+            <div>📦 ${month.ordersPlaced.toLocaleString()} orders placed</div>
+            <div>✅ ${month.ordersFulfilled.toLocaleString()} fulfilled</div>
+            <div>📊 ${month.totalItems.toLocaleString()} items shipped</div>
+            <div>👥 ${month.uniqueCustomers.toLocaleString()} customers</div>
           </div>
         `;
         
@@ -519,9 +568,9 @@
         chart.destroy();
       }
 
-      const labels = data.map(d => `${d.month} ${d.year}`);
-      const ordersData = data.map(d => d.ordersPlaced);
-      const fulfilledData = data.map(d => d.ordersFulfilled);
+      const labels = data.map(d => `${d.month} ${d.year}`).reverse();
+      const ordersData = data.map(d => d.ordersPlaced).reverse();
+      const fulfilledData = data.map(d => d.ordersFulfilled).reverse();
 
       chart = new Chart(ctx, {
         type: 'line',
@@ -581,28 +630,54 @@
       }
     }
 
+    function jumpToCurrentMonth() {
+      // Switch to calendar view if not already
+      if (currentView !== 'calendar') {
+        switchView('calendar');
+      }
+      
+      // Find and scroll to current month card
+      const currentCard = document.getElementById(`month-${currentMonth}-${currentYear}`);
+      if (currentCard) {
+        currentCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        
+        // Add a pulse animation
+        currentCard.style.animation = 'pulse 0.5s ease-in-out';
+        setTimeout(() => {
+          currentCard.style.animation = '';
+        }, 500);
+      } else {
+        alert(`Current month (${currentMonth} ${currentYear}) not found in data. Try refreshing!`);
+      }
+    }
+
     function showMonthDetail(month) {
       const modal = document.getElementById('detailModal');
       const content = document.getElementById('modalContent');
       
+      const isCurrentMonth = month.month === currentMonth && month.year === currentYear;
+      
       content.innerHTML = `
-        <h2 class="detail-header">${month.month} ${month.year}</h2>
+        <h2 class="detail-header">
+          ${month.month} ${month.year}
+          ${isCurrentMonth ? '<span style="color: #10b981; font-size: 0.6em; margin-left: 10px;">● CURRENT</span>' : ''}
+        </h2>
         <div class="detail-grid">
           <div class="detail-item">
             <label>Orders Placed</label>
-            <value>${month.ordersPlaced}</value>
+            <value>${month.ordersPlaced.toLocaleString()}</value>
           </div>
           <div class="detail-item">
             <label>Orders Fulfilled</label>
-            <value>${month.ordersFulfilled}</value>
+            <value>${month.ordersFulfilled.toLocaleString()}</value>
           </div>
           <div class="detail-item">
             <label>Total Items</label>
-            <value>${month.totalItems}</value>
+            <value>${month.totalItems.toLocaleString()}</value>
           </div>
           <div class="detail-item">
             <label>Unique Customers</label>
-            <value>${month.uniqueCustomers}</value>
+            <value>${month.uniqueCustomers.toLocaleString()}</value>
           </div>
           <div class="detail-item">
             <label>Avg Items/Order</label>
@@ -634,9 +709,29 @@
     }
 
     function handleError(error) {
-      document.getElementById('loading').style.display = 'none';
-      alert('Error loading data: ' + error.message);
+      document.getElementById('loading').innerHTML = `
+        <div class="error">
+          <h2>❌ Error Loading Data</h2>
+          <p><strong>Make sure you've:</strong></p>
+          <p>1. Published your Google Sheet to the web</p>
+          <p>2. Replaced <code>YOUR_SHEET_ID_HERE</code> with your actual Sheet ID</p>
+          <p>3. Sheet name is exactly "Orders by Month"</p>
+          <br>
+          <p style="color: #ef4444;">Error: ${error.message}</p>
+        </div>
+      `;
+      document.getElementById('loading').style.display = 'block';
     }
+
+    // Add CSS animation for pulse
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+      }
+    `;
+    document.head.appendChild(style);
   </script>
 </body>
 </html>
