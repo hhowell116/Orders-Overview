@@ -1,258 +1,773 @@
+
 <!DOCTYPE html>
 <html lang="en">
-  
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>
-      ShipStation Monthly Orders Dashboard
-    </title>
-    <style>
-      * { margin: 0; padding: 0; box-sizing: border-box; } body { font-family:
-      -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
-      Cantarell, sans-serif; background: linear-gradient(135deg, #667eea 0%,
-      #764ba2 100%); padding: 10px; min-height: 100vh; } @media (min-width: 768px)
-      { body { padding: 20px; } } .container { max-width: 1400px; margin: 0 auto;
-      } .header { background: white; padding: 20px; border-radius: 15px; box-shadow:
-      0 10px 30px rgba(0,0,0,0.2); margin-bottom: 20px; text-align: center; }
-      @media (min-width: 768px) { .header { padding: 30px; margin-bottom: 30px;
-      } } .header h1 { color: #667eea; font-size: 1.5em; margin-bottom: 8px;
-      line-height: 1.2; } @media (min-width: 768px) { .header h1 { font-size:
-      2.5em; margin-bottom: 10px; } } .header p { color: #666; font-size: 0.9em;
-      } @media (min-width: 768px) { .header p { font-size: 1.1em; } } .controls
-      { background: white; padding: 15px; border-radius: 10px; box-shadow: 0
-      5px 15px rgba(0,0,0,0.1); margin-bottom: 15px; display: flex; gap: 10px;
-      align-items: center; flex-wrap: wrap; } @media (min-width: 768px) { .controls
-      { padding: 20px; margin-bottom: 20px; gap: 15px; } } .controls label {
-      font-weight: 600; color: #333; font-size: 0.9em; width: 100%; } @media
-      (min-width: 768px) { .controls label { width: auto; font-size: 1em; } }
-      .controls select, .controls button { padding: 10px 15px; border: 2px solid
-      #667eea; border-radius: 8px; font-size: 0.9em; cursor: pointer; transition:
-      all 0.3s; flex: 1; min-width: 120px; } @media (min-width: 768px) { .controls
-      select, .controls button { padding: 10px 20px; font-size: 1em; flex: 0;
-      min-width: auto; } } .controls select { background: white; color: #333;
-      } .controls button { background: #667eea; color: white; border: none; font-weight:
-      600; } .controls button:hover { background: #5568d3; transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3); } .controls button:active
-      { transform: translateY(0); } .controls button.current-month { background:
-      #10b981; border-color: #10b981; } .controls button.current-month:hover
-      { background: #059669; } .view-toggle { width: 100%; display: flex; gap:
-      10px; margin-top: 10px; } @media (min-width: 768px) { .view-toggle { margin-left:
-      auto; margin-top: 0; width: auto; } } .view-btn { padding: 10px 15px; background:
-      white; border: 2px solid #667eea; color: #667eea; border-radius: 8px; cursor:
-      pointer; transition: all 0.3s; font-weight: 600; flex: 1; font-size: 0.9em;
-      } @media (min-width: 768px) { .view-btn { padding: 10px 20px; flex: 0;
-      font-size: 1em; } } .view-btn.active { background: #667eea; color: white;
-      } .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap:
-      10px; margin-bottom: 20px; } @media (min-width: 768px) { .stats-grid {
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;
-      margin-bottom: 30px; } } .stat-card { background: white; padding: 15px;
-      border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); transition:
-      transform 0.3s; } @media (min-width: 768px) { .stat-card { padding: 25px;
-      } } .stat-card:hover { transform: translateY(-5px); box-shadow: 0 10px
-      25px rgba(0,0,0,0.15); } .stat-label { color: #666; font-size: 0.75em;
-      text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
-      @media (min-width: 768px) { .stat-label { font-size: 0.9em; letter-spacing:
-      1px; margin-bottom: 10px; } } .stat-value { color: #667eea; font-size:
-      1.8em; font-weight: bold; } @media (min-width: 768px) { .stat-value { font-size:
-      2.5em; } } .calendar-view { background: white; padding: 15px; border-radius:
-      15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); display: none; } @media
-      (min-width: 768px) { .calendar-view { padding: 30px; } } .calendar-view.active
-      { display: block; } .calendar-header { display: flex; justify-content:
-      space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap;
-      gap: 10px; } @media (min-width: 768px) { .calendar-header { margin-bottom:
-      30px; } } .calendar-header h2 { color: #333; font-size: 1.3em; } @media
-      (min-width: 768px) { .calendar-header h2 { font-size: 1.8em; } } .calendar-grid
-      { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,
-      1fr)); gap: 15px; } @media (min-width: 768px) { .calendar-grid { grid-template-columns:
-      repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; } } .month-card { background:
-      linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding:
-      20px; border-radius: 10px; cursor: pointer; transition: all 0.3s; position:
-      relative; overflow: hidden; } @media (min-width: 768px) { .month-card {
-      padding: 25px; } } .month-card.current-month { background: linear-gradient(135deg,
-      #10b981 0%, #059669 100%); border: 3px solid #fff; box-shadow: 0 10px 30px
-      rgba(16, 185, 129, 0.4); } .month-card.current-month .month-badge { position:
-      absolute; top: 10px; right: 10px; background: rgba(255, 255, 255, 0.3);
-      padding: 4px 10px; border-radius: 20px; font-size: 0.7em; font-weight:
-      bold; } @media (min-width: 768px) { .month-card.current-month .month-badge
-      { padding: 5px 12px; font-size: 0.8em; } } .month-card:hover { transform:
-      scale(1.05); box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4); } .month-card:active
-      { transform: scale(0.98); } .month-name { font-size: 1.3em; font-weight:
-      bold; margin-bottom: 12px; } @media (min-width: 768px) { .month-name {
-      font-size: 1.5em; margin-bottom: 15px; } } .month-stats { font-size: 0.9em;
-      opacity: 0.95; } @media (min-width: 768px) { .month-stats { font-size:
-      0.95em; } } .month-stats div { margin: 6px 0; display: flex; align-items:
-      center; gap: 6px; } @media (min-width: 768px) { .month-stats div { margin:
-      8px 0; gap: 8px; } } .chart-view { background: white; padding: 15px; border-radius:
-      15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); } @media (min-width: 768px)
-      { .chart-view { padding: 30px; } } .chart-view h2 { font-size: 1.3em; margin-bottom:
-      15px; } @media (min-width: 768px) { .chart-view h2 { font-size: 1.5em;
-      margin-bottom: 20px; } } .chart-container { width: 100%; height: 300px;
-      margin-top: 15px; } @media (min-width: 768px) { .chart-container { height:
-      450px; margin-top: 20px; } } .loading { text-align: center; padding: 30px;
-      color: white; font-size: 1.2em; } @media (min-width: 768px) { .loading
-      { padding: 50px; font-size: 1.5em; } } .loading::after { content: '...';
-      animation: dots 1.5s steps(4, end) infinite; } @keyframes dots { 0%, 20%
-      { content: '.'; } 40% { content: '..'; } 60%, 100% { content: '...'; }
-      } .detail-modal { display: none; position: fixed; top: 0; left: 0; width:
-      100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; align-items:
-      center; justify-content: center; padding: 10px; } @media (min-width: 768px)
-      { .detail-modal { padding: 20px; } } .detail-modal.active { display: flex;
-      } .detail-content { background: white; padding: 25px; border-radius: 15px;
-      max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto; position:
-      relative; } @media (min-width: 768px) { .detail-content { padding: 40px;
-      max-height: 80vh; } } .close-modal { position: absolute; top: 10px; right:
-      15px; font-size: 1.8em; cursor: pointer; color: #999; transition: color
-      0.3s; z-index: 10; } @media (min-width: 768px) { .close-modal { top: 15px;
-      font-size: 2em; } } .close-modal:hover { color: #333; } .detail-header
-      { color: #667eea; font-size: 1.5em; margin-bottom: 15px; padding-right:
-      30px; } @media (min-width: 768px) { .detail-header { font-size: 2em; margin-bottom:
-      20px; } } .detail-grid { display: grid; grid-template-columns: 1fr; gap:
-      12px; margin-top: 15px; } @media (min-width: 500px) { .detail-grid { grid-template-columns:
-      repeat(2, 1fr); gap: 15px; margin-top: 20px; } } .detail-item { padding:
-      12px; background: #f8f9fa; border-radius: 8px; } @media (min-width: 768px)
-      { .detail-item { padding: 15px; } } .detail-item label { display: block;
-      color: #666; font-size: 0.8em; margin-bottom: 5px; text-transform: uppercase;
-      letter-spacing: 0.5px; } @media (min-width: 768px) { .detail-item label
-      { font-size: 0.9em; letter-spacing: 1px; } } .detail-item value { display:
-      block; color: #333; font-size: 1.3em; font-weight: bold; } @media (min-width:
-      768px) { .detail-item value { font-size: 1.5em; } } .error { background:
-      white; padding: 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-      text-align: center; color: #ef4444; } @media (min-width: 768px) { .error
-      { padding: 30px; } } .error h2 { margin-bottom: 12px; font-size: 1.3em;
-      } @media (min-width: 768px) { .error h2 { margin-bottom: 15px; font-size:
-      1.5em; } } .error p { color: #666; line-height: 1.6; font-size: 0.9em;
-      } @media (min-width: 768px) { .error p { font-size: 1em; } } .error code
-      { background: #f8f9fa; padding: 2px 8px; border-radius: 4px; font-family:
-      monospace; color: #333; font-size: 0.85em; } /* Improve touch targets for
-      mobile */ @media (max-width: 767px) { button, select, .month-card, .view-btn
-      { min-height: 44px; } } /* Smooth scrolling for all */ html { scroll-behavior:
-      smooth; }
-    </style>
-  </head>
-  
-  <body>
-    <div class="container">
-      <div class="header">
-        <h1>
-          📊 ShipStation Monthly Orders Dashboard
-        </h1>
-        <p>
-          Track your order metrics month by month
-        </p>
-      </div>
-      <div class="controls">
-        <label>
-          View Year:
-        </label>
-        <select id="yearFilter">
-          <option value="all">
-            All Years
-          </option>
-        </select>
-        <button onclick="jumpToCurrentMonth()" class="current-month">
-          📅 Current Month
-        </button>
-        <button onclick="refreshData()">
-          🔄 Refresh Data
-        </button>
-        <div class="view-toggle">
-          <button class="view-btn active" onclick="switchView('calendar')">
-            📅 Calendar
-          </button>
-          <button class="view-btn" onclick="switchView('chart')">
-            📈 Chart
-          </button>
-        </div>
-      </div>
-      <div id="loading" class="loading">
-        Loading data
-      </div>
-      <div id="statsGrid" class="stats-grid" style="display: none;">
-      </div>
-      <div id="calendarView" class="calendar-view">
-        <div class="calendar-header">
-          <h2 id="calendarTitle">
-            All Months
-          </h2>
-        </div>
-        <div id="calendarGrid" class="calendar-grid">
-        </div>
-      </div>
-      <div id="chartView" class="chart-view" style="display: none;">
-        <h2 style="color: #667eea; margin-bottom: 20px;">
-          Monthly Orders Trends
-        </h2>
-        <canvas id="ordersChart" class="chart-container">
-        </canvas>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ShipStation Monthly Orders Dashboard</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 10px;
+      min-height: 100vh;
+    }
+
+    @media (min-width: 768px) {
+      body {
+        padding: 20px;
+      }
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .header {
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    @media (min-width: 768px) {
+      .header {
+        padding: 30px;
+        margin-bottom: 30px;
+      }
+    }
+
+    .header h1 {
+      color: #667eea;
+      font-size: 1.5em;
+      margin-bottom: 8px;
+      line-height: 1.2;
+    }
+
+    @media (min-width: 768px) {
+      .header h1 {
+        font-size: 2.5em;
+        margin-bottom: 10px;
+      }
+    }
+
+    .header p {
+      color: #666;
+      font-size: 0.9em;
+    }
+
+    @media (min-width: 768px) {
+      .header p {
+        font-size: 1.1em;
+      }
+    }
+
+    .controls {
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      margin-bottom: 15px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    @media (min-width: 768px) {
+      .controls {
+        padding: 20px;
+        margin-bottom: 20px;
+        gap: 15px;
+      }
+    }
+
+    .controls label {
+      font-weight: 600;
+      color: #333;
+      font-size: 0.9em;
+      width: 100%;
+    }
+
+    @media (min-width: 768px) {
+      .controls label {
+        width: auto;
+        font-size: 1em;
+      }
+    }
+
+    .controls select, .controls button {
+      padding: 10px 15px;
+      border: 2px solid #667eea;
+      border-radius: 8px;
+      font-size: 0.9em;
+      cursor: pointer;
+      transition: all 0.3s;
+      flex: 1;
+      min-width: 120px;
+    }
+
+    @media (min-width: 768px) {
+      .controls select, .controls button {
+        padding: 10px 20px;
+        font-size: 1em;
+        flex: 0;
+        min-width: auto;
+      }
+    }
+
+    .controls select {
+      background: white;
+      color: #333;
+    }
+
+    .controls button {
+      background: #667eea;
+      color: white;
+      border: none;
+      font-weight: 600;
+    }
+
+    .controls button:hover {
+      background: #5568d3;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .controls button:active {
+      transform: translateY(0);
+    }
+
+    .controls button.current-month {
+      background: #10b981;
+      border-color: #10b981;
+    }
+
+    .controls button.current-month:hover {
+      background: #059669;
+    }
+
+    .view-toggle {
+      width: 100%;
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    @media (min-width: 768px) {
+      .view-toggle {
+        margin-left: auto;
+        margin-top: 0;
+        width: auto;
+      }
+    }
+
+    .view-btn {
+      padding: 10px 15px;
+      background: white;
+      border: 2px solid #667eea;
+      color: #667eea;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-weight: 600;
+      flex: 1;
+      font-size: 0.9em;
+    }
+
+    @media (min-width: 768px) {
+      .view-btn {
+        padding: 10px 20px;
+        flex: 0;
+        font-size: 1em;
+      }
+    }
+
+    .view-btn.active {
+      background: #667eea;
+      color: white;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    @media (min-width: 768px) {
+      .stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+    }
+
+    .stat-card {
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      transition: transform 0.3s;
+    }
+
+    @media (min-width: 768px) {
+      .stat-card {
+        padding: 25px;
+      }
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    }
+
+    .stat-label {
+      color: #666;
+      font-size: 0.75em;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    @media (min-width: 768px) {
+      .stat-label {
+        font-size: 0.9em;
+        letter-spacing: 1px;
+        margin-bottom: 10px;
+      }
+    }
+
+    .stat-value {
+      color: #667eea;
+      font-size: 1.8em;
+      font-weight: bold;
+    }
+
+    @media (min-width: 768px) {
+      .stat-value {
+        font-size: 2.5em;
+      }
+    }
+
+    .calendar-view {
+      background: white;
+      padding: 15px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      display: none;
+    }
+
+    @media (min-width: 768px) {
+      .calendar-view {
+        padding: 30px;
+      }
+    }
+
+    .calendar-view.active {
+      display: block;
+    }
+
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    @media (min-width: 768px) {
+      .calendar-header {
+        margin-bottom: 30px;
+      }
+    }
+
+    .calendar-header h2 {
+      color: #333;
+      font-size: 1.3em;
+    }
+
+    @media (min-width: 768px) {
+      .calendar-header h2 {
+        font-size: 1.8em;
+      }
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 15px;
+    }
+
+    @media (min-width: 768px) {
+      .calendar-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+      }
+    }
+
+    .month-card {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    @media (min-width: 768px) {
+      .month-card {
+        padding: 25px;
+      }
+    }
+
+    .month-card.current-month {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      border: 3px solid #fff;
+      box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
+    }
+
+    .month-card.current-month .month-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(255, 255, 255, 0.3);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.7em;
+      font-weight: bold;
+    }
+
+    @media (min-width: 768px) {
+      .month-card.current-month .month-badge {
+        padding: 5px 12px;
+        font-size: 0.8em;
+      }
+    }
+
+    .month-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+    }
+
+    .month-card:active {
+      transform: scale(0.98);
+    }
+
+    .month-name {
+      font-size: 1.3em;
+      font-weight: bold;
+      margin-bottom: 12px;
+    }
+
+    @media (min-width: 768px) {
+      .month-name {
+        font-size: 1.5em;
+        margin-bottom: 15px;
+      }
+    }
+
+    .month-stats {
+      font-size: 0.9em;
+      opacity: 0.95;
+    }
+
+    @media (min-width: 768px) {
+      .month-stats {
+        font-size: 0.95em;
+      }
+    }
+
+    .month-stats div {
+      margin: 6px 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    @media (min-width: 768px) {
+      .month-stats div {
+        margin: 8px 0;
+        gap: 8px;
+      }
+    }
+
+    .chart-view {
+      background: white;
+      padding: 15px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    @media (min-width: 768px) {
+      .chart-view {
+        padding: 30px;
+      }
+    }
+
+    .chart-view h2 {
+      font-size: 1.3em;
+      margin-bottom: 15px;
+    }
+
+    @media (min-width: 768px) {
+      .chart-view h2 {
+        font-size: 1.5em;
+        margin-bottom: 20px;
+      }
+    }
+
+    .chart-container {
+      width: 100%;
+      height: 300px;
+      margin-top: 15px;
+    }
+
+    @media (min-width: 768px) {
+      .chart-container {
+        height: 450px;
+        margin-top: 20px;
+      }
+    }
+
+    .loading {
+      text-align: center;
+      padding: 30px;
+      color: white;
+      font-size: 1.2em;
+    }
+
+    @media (min-width: 768px) {
+      .loading {
+        padding: 50px;
+        font-size: 1.5em;
+      }
+    }
+
+    .loading::after {
+      content: '...';
+      animation: dots 1.5s steps(4, end) infinite;
+    }
+
+    @keyframes dots {
+      0%, 20% { content: '.'; }
+      40% { content: '..'; }
+      60%, 100% { content: '...'; }
+    }
+
+    .detail-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+    }
+
+    @media (min-width: 768px) {
+      .detail-modal {
+        padding: 20px;
+      }
+    }
+
+    .detail-modal.active {
+      display: flex;
+    }
+
+    .detail-content {
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      max-width: 600px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    @media (min-width: 768px) {
+      .detail-content {
+        padding: 40px;
+        max-height: 80vh;
+      }
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 1.8em;
+      cursor: pointer;
+      color: #999;
+      transition: color 0.3s;
+      z-index: 10;
+    }
+
+    @media (min-width: 768px) {
+      .close-modal {
+        top: 15px;
+        font-size: 2em;
+      }
+    }
+
+    .close-modal:hover {
+      color: #333;
+    }
+
+    .detail-header {
+      color: #667eea;
+      font-size: 1.5em;
+      margin-bottom: 15px;
+      padding-right: 30px;
+    }
+
+    @media (min-width: 768px) {
+      .detail-header {
+        font-size: 2em;
+        margin-bottom: 20px;
+      }
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-top: 15px;
+    }
+
+    @media (min-width: 500px) {
+      .detail-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        margin-top: 20px;
+      }
+    }
+
+    .detail-item {
+      padding: 12px;
+      background: #f8f9fa;
+      border-radius: 8px;
+    }
+
+    @media (min-width: 768px) {
+      .detail-item {
+        padding: 15px;
+      }
+    }
+
+    .detail-item label {
+      display: block;
+      color: #666;
+      font-size: 0.8em;
+      margin-bottom: 5px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    @media (min-width: 768px) {
+      .detail-item label {
+        font-size: 0.9em;
+        letter-spacing: 1px;
+      }
+    }
+
+    .detail-item value {
+      display: block;
+      color: #333;
+      font-size: 1.3em;
+      font-weight: bold;
+    }
+
+    @media (min-width: 768px) {
+      .detail-item value {
+        font-size: 1.5em;
+      }
+    }
+
+    .error {
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      text-align: center;
+      color: #ef4444;
+    }
+
+    @media (min-width: 768px) {
+      .error {
+        padding: 30px;
+      }
+    }
+
+    .error h2 {
+      margin-bottom: 12px;
+      font-size: 1.3em;
+    }
+
+    @media (min-width: 768px) {
+      .error h2 {
+        margin-bottom: 15px;
+        font-size: 1.5em;
+      }
+    }
+
+    .error p {
+      color: #666;
+      line-height: 1.6;
+      font-size: 0.9em;
+    }
+
+    @media (min-width: 768px) {
+      .error p {
+        font-size: 1em;
+      }
+    }
+
+    .error code {
+      background: #f8f9fa;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-family: monospace;
+      color: #333;
+      font-size: 0.85em;
+    }
+
+    /* Improve touch targets for mobile */
+    @media (max-width: 767px) {
+      button, select, .month-card, .view-btn {
+        min-height: 44px;
+      }
+    }
+
+    /* Smooth scrolling for all */
+    html {
+      scroll-behavior: smooth;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>📊 ShipStation Monthly Orders Dashboard</h1>
+      <p>Track your order metrics month by month</p>
+    </div>
+
+    <div class="controls">
+      <label>View Year:</label>
+      <select id="yearFilter">
+        <option value="all">All Years</option>
+      </select>
+      
+      <button onclick="jumpToCurrentMonth()" class="current-month">📅 Current Month</button>
+      <button onclick="refreshData()">🔄 Refresh Data</button>
+      
+      <div class="view-toggle">
+        <button class="view-btn active" onclick="switchView('calendar')">📅 Calendar</button>
+        <button class="view-btn" onclick="switchView('chart')">📈 Chart</button>
       </div>
     </div>
-    <div id="detailModal" class="detail-modal">
-      <div class="detail-content">
-        <span class="close-modal" onclick="closeModal()">
-          &times;
-        </span>
-        <div id="modalContent">
-        </div>
+
+    <div id="loading" class="loading">Loading data</div>
+
+    <div id="statsGrid" class="stats-grid" style="display: none;"></div>
+
+    <div id="calendarView" class="calendar-view">
+      <div class="calendar-header">
+        <h2 id="calendarTitle">All Months</h2>
       </div>
+      <div id="calendarGrid" class="calendar-grid"></div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js">
-    </script>
-    <script>
-      // Your Google Sheet ID
-      const SHEET_ID = '1fuXYhSNqwFA7nB9k3Nqd_Epp1BV8ZYlTi9JRm98KtNU';
 
-      let allData = [];
-      let currentView = 'calendar';
-      let chart = null;
-      const currentDate = new Date();
-      const currentMonth = currentDate.toLocaleString('default', {
-        month: 'long'
-      });
-      const currentYear = currentDate.getFullYear();
+    <div id="chartView" class="chart-view" style="display: none;">
+      <h2 style="color: #667eea; margin-bottom: 20px;">Monthly Orders Trends</h2>
+      <canvas id="ordersChart" class="chart-container"></canvas>
+    </div>
+  </div>
 
-      // Load data on page load
-      window.onload = function() {
-        loadData();
-      };
+  <div id="detailModal" class="detail-modal">
+    <div class="detail-content">
+      <span class="close-modal" onclick="closeModal()">&times;</span>
+      <div id="modalContent"></div>
+    </div>
+  </div>
 
-      function loadData() {
-        document.getElementById('loading').style.display = 'block';
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    // Your Google Sheet ID
+    const SHEET_ID = '1fuXYhSNqwFA7nB9k3Nqd_Epp1BV8ZYlTi9JRm98KtNU';
+    
+    let allData = [];
+    let currentView = 'calendar';
+    let chart = null;
+    const currentDate = new Date();
+    const currentMonth = currentDate.toLocaleString('default', { month: 'long' });
+    const currentYear = currentDate.getFullYear();
 
-        const url = `https: //docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Orders%20by%20Month`;
-        fetch(url).then(response = >response.text()).then(text = >{
+    // Load data on page load
+    window.onload = function() {
+      loadData();
+    };
+
+    function loadData() {
+      document.getElementById('loading').style.display = 'block';
+      
+      const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Orders%20by%20Month`;
+      
+      fetch(url)
+        .then(response => response.text())
+        .then(text => {
           // Remove Google's JSONP wrapper
           const json = text.substring(47).slice(0, -2);
           const data = JSON.parse(json);
-
+          
           const rows = data.table.rows;
-          const processedData = rows.map(row = >({
-            month: row.c[0] ? .v || '',
-            year: row.c[1] ? .v || 0,
-            ordersPlaced: row.c[2] ? .v || 0,
-            ordersFulfilled: row.c[3] ? .v || 0,
-            totalItems: row.c[4] ? .v || 0,
-            uniqueCustomers: row.c[5] ? .v || 0,
-            avgItemsPerOrder: row.c[6] ? .v || 0,
-            fulfillmentRate: row.c[7] ? .v || '',
-            topProduct: row.c[8] ? .v || 'N/A',
-            lastUpdated: row.c[9] ? .v || ''
+          const processedData = rows.map(row => ({
+            month: row.c[0]?.v || '',
+            year: row.c[1]?.v || 0,
+            ordersPlaced: row.c[2]?.v || 0,
+            ordersFulfilled: row.c[3]?.v || 0,
+            totalItems: row.c[4]?.v || 0,
+            uniqueCustomers: row.c[5]?.v || 0,
+            avgItemsPerOrder: row.c[6]?.v || 0,
+            fulfillmentRate: row.c[7]?.v || '',
+            topProduct: row.c[8]?.v || 'N/A',
+            lastUpdated: row.c[9]?.v || ''
           }));
-
+          
           displayData(processedData);
-        }).
-        catch(error = >{
+        })
+        .catch(error => {
           handleError(error);
         });
-      }
+    }
 
-      function displayData(data) {
-        document.getElementById('loading').style.display = 'none';
-        allData = data;
-
-        if (data.length === 0) {
-          document.getElementById('loading').innerHTML = ` < div class = "error" > <h2 > ❌No Data Found < /h2>
-            <p>Please run "Pull All Monthly Data" from your Google Sheet first.</p > </div>
+    function displayData(data) {
+      document.getElementById('loading').style.display = 'none';
+      allData = data;
+      
+      if (data.length === 0) {
+        document.getElementById('loading').innerHTML = `
+          <div class="error">
+            <h2>❌ No Data Found</h2>
+            <p>Please run "Pull All Monthly Data" from your Google Sheet first.</p>
+          </div>
         `;
         document.getElementById('loading').style.display = 'block';
         return;
@@ -271,14 +786,14 @@
       const years = [...new Set(data.map(d => d.year))].sort((a, b) => b - a);
       const select = document.getElementById('yearFilter');
       
-      select.innerHTML = '<option value="all">All Years</option > ';
+      select.innerHTML = '<option value="all">All Years</option>';
       years.forEach(year => {
         select.innerHTML += `<option value="${year}">${year}</option>`;
       });
       
       select.onchange = function() {
         const year = this.value;
-        const filtered = year === 'all ' ? allData : allData.filter(d => d.year == year);
+        const filtered = year === 'all' ? allData : allData.filter(d => d.year == year);
         renderStats(filtered);
         renderCalendar(filtered);
         renderChart(filtered);
@@ -310,32 +825,30 @@
         </div>
       `;
 
-      document.getElementById('statsGrid ').innerHTML = statsHTML;
+      document.getElementById('statsGrid').innerHTML = statsHTML;
     }
 
     function renderCalendar(data) {
-      const grid = document.getElementById('calendarGrid ');
+      const grid = document.getElementById('calendarGrid');
       grid.innerHTML = '';
 
       data.forEach(month => {
         const isCurrentMonth = month.month === currentMonth && month.year === currentYear;
         
-        const card = document.createElement('div ');
-        card.className = 'month - card ' + (isCurrentMonth ? 'current - month ' : '');
+        const card = document.createElement('div');
+        card.className = 'month-card' + (isCurrentMonth ? ' current-month' : '');
         card.onclick = () => showMonthDetail(month);
         card.id = `month-${month.month}-${month.year}`;
         
         card.innerHTML = `
-          ${isCurrentMonth ? ' < div class = "month-badge" > CURRENT < /div>' : ''}
-          <div class="month-name">${month.month} ${month.year}</div > <div class = "month-stats" > <div > 📦$ {
-            month.ordersPlaced.toLocaleString()
-          }
-          orders placed < /div>
-            <div>✅ ${month.ordersFulfilled.toLocaleString()} fulfilled</div > <div > 📊$ {
-            month.totalItems.toLocaleString()
-          }
-          items shipped < /div>
-            <div>👥 ${month.uniqueCustomers.toLocaleString()} customers</div > </div>
+          ${isCurrentMonth ? '<div class="month-badge">CURRENT</div>' : ''}
+          <div class="month-name">${month.month} ${month.year}</div>
+          <div class="month-stats">
+            <div>📦 ${month.ordersPlaced.toLocaleString()} orders placed</div>
+            <div>✅ ${month.ordersFulfilled.toLocaleString()} fulfilled</div>
+            <div>📊 ${month.totalItems.toLocaleString()} items shipped</div>
+            <div>👥 ${month.uniqueCustomers.toLocaleString()} customers</div>
+          </div>
         `;
         
         grid.appendChild(card);
@@ -412,98 +925,84 @@
     }
 
     function jumpToCurrentMonth() {
-      / / Switch to calendar view
-          if not already
-          if (currentView !== 'calendar') {
-            switchView('calendar');
-          }
-
-          // Reset year filter to show current year
-          const yearFilter = document.getElementById('yearFilter');
-          if (yearFilter.value !== 'all' && yearFilter.value != currentYear) {
-            yearFilter.value = currentYear;
-            // Trigger the filter change to re-render with current year
-            const filtered = allData.filter(d = >d.year == currentYear);
-            renderStats(filtered);
-            renderCalendar(filtered);
-            renderChart(filtered);
-          }
-
-          // Small delay to ensure rendering is complete
-          setTimeout(() = >{
-            // Find and scroll to current month card
-            const currentCard = document.getElementById(`month - $ {
-              currentMonth
-            } - $ {
-              currentYear
-            }`);
-            if (currentCard) {
-              currentCard.scrollIntoView({
-                behavior: 'smooth',
-                block: 'center'
-              });
-
-              // Add a pulse animation
-              currentCard.style.animation = 'pulse 0.5s ease-in-out';
-              setTimeout(() = >{
-                currentCard.style.animation = '';
-              },
-              500);
-            } else {
-              alert(`Current month($ {
-                currentMonth
-              }
-              $ {
-                currentYear
-              }) not found in data.Try refreshing ! `);
-            }
-          },
-          100);
+      // Switch to calendar view if not already
+      if (currentView !== 'calendar') {
+        switchView('calendar');
+      }
+      
+      // Reset year filter to show current year
+      const yearFilter = document.getElementById('yearFilter');
+      if (yearFilter.value !== 'all' && yearFilter.value != currentYear) {
+        yearFilter.value = currentYear;
+        // Trigger the filter change to re-render with current year
+        const filtered = allData.filter(d => d.year == currentYear);
+        renderStats(filtered);
+        renderCalendar(filtered);
+        renderChart(filtered);
+      }
+      
+      // Small delay to ensure rendering is complete
+      setTimeout(() => {
+        // Find and scroll to current month card
+        const currentCard = document.getElementById(`month-${currentMonth}-${currentYear}`);
+        if (currentCard) {
+          currentCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          
+          // Add a pulse animation
+          currentCard.style.animation = 'pulse 0.5s ease-in-out';
+          setTimeout(() => {
+            currentCard.style.animation = '';
+          }, 500);
+        } else {
+          alert(`Current month (${currentMonth} ${currentYear}) not found in data. Try refreshing!`);
         }
+      }, 100);
+    }
 
-        function showMonthDetail(month) {
-          const modal = document.getElementById('detailModal');
-          const content = document.getElementById('modalContent');
-
-          const isCurrentMonth = month.month === currentMonth && month.year === currentYear;
-
-          content.innerHTML = ` < h2 class = "detail-header" > $ {
-            month.month
-          }
-          $ {
-            month.year
-          }
-          $ {
-            isCurrentMonth ? '<span style="color: #10b981; font-size: 0.6em; margin-left: 10px;">● CURRENT</span>': ''
-          } < /h2>
+    function showMonthDetail(month) {
+      const modal = document.getElementById('detailModal');
+      const content = document.getElementById('modalContent');
+      
+      const isCurrentMonth = month.month === currentMonth && month.year === currentYear;
+      
+      content.innerHTML = `
+        <h2 class="detail-header">
+          ${month.month} ${month.year}
+          ${isCurrentMonth ? '<span style="color: #10b981; font-size: 0.6em; margin-left: 10px;">● CURRENT</span>' : ''}
+        </h2>
         <div class="detail-grid">
           <div class="detail-item">
-            <label>Orders Placed</label > <value > $ {
-            month.ordersPlaced.toLocaleString()
-          } < /value>
-          </div > <div class = "detail-item" > <label > Orders Fulfilled < /label>
-            <value>${month.ordersFulfilled.toLocaleString()}</value > </div>
+            <label>Orders Placed</label>
+            <value>${month.ordersPlaced.toLocaleString()}</value>
+          </div>
           <div class="detail-item">
-            <label>Total Items</label > <value > $ {
-            month.totalItems.toLocaleString()
-          } < /value>
-          </div > <div class = "detail-item" > <label > Unique Customers < /label>
-            <value>${month.uniqueCustomers.toLocaleString()}</value > </div>
+            <label>Orders Fulfilled</label>
+            <value>${month.ordersFulfilled.toLocaleString()}</value>
+          </div>
           <div class="detail-item">
-            <label>Avg Items/Order < /label>
-            <value>${month.avgItemsPerOrder}</value > </div>
+            <label>Total Items</label>
+            <value>${month.totalItems.toLocaleString()}</value>
+          </div>
           <div class="detail-item">
-            <label>Fulfillment Rate</label > <value > $ {
-            month.fulfillmentRate
-          } < /value>
-          </div > </div>
+            <label>Unique Customers</label>
+            <value>${month.uniqueCustomers.toLocaleString()}</value>
+          </div>
+          <div class="detail-item">
+            <label>Avg Items/Order</label>
+            <value>${month.avgItemsPerOrder}</value>
+          </div>
+          <div class="detail-item">
+            <label>Fulfillment Rate</label>
+            <value>${month.fulfillmentRate}</value>
+          </div>
+        </div>
         <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
-          <label style="color: #666; text-transform: uppercase; font-size: 0.9em;">Top Product</label > <div style = "margin-top: 5px; font-size: 1.1em; color: #333;" > $ {
-            month.topProduct
-          } < /div>
-        </div > <div style = "margin-top: 15px; text-align: center; font-size: 0.9em; color: #999;" > Last updated: $ {
-            month.lastUpdated
-          } < /div>
+          <label style="color: #666; text-transform: uppercase; font-size: 0.9em;">Top Product</label>
+          <div style="margin-top: 5px; font-size: 1.1em; color: #333;">${month.topProduct}</div>
+        </div>
+        <div style="margin-top: 15px; text-align: center; font-size: 0.9em; color: #999;">
+          Last updated: ${month.lastUpdated}
+        </div>
       `;
       
       modal.classList.add('active');
@@ -520,7 +1019,8 @@
     function handleError(error) {
       document.getElementById('loading').innerHTML = `
         <div class="error">
-          <h2>❌ Error Loading Data</h2 > <p > <strong > Make sure you 've:</strong></p>
+          <h2>❌ Error Loading Data</h2>
+          <p><strong>Make sure you've:</strong></p>
           <p>1. Published your Google Sheet to the web</p>
           <p>2. Replaced <code>YOUR_SHEET_ID_HERE</code> with your actual Sheet ID</p>
           <p>3. Sheet name is exactly "Orders by Month"</p>
@@ -528,11 +1028,11 @@
           <p style="color: #ef4444;">Error: ${error.message}</p>
         </div>
       `;
-      document.getElementById('loading ').style.display = 'block ';
+      document.getElementById('loading').style.display = 'block';
     }
 
     // Add CSS animation for pulse
-    const style = document.createElement('style ');
+    const style = document.createElement('style');
     style.textContent = `
       @keyframes pulse {
         0%, 100% { transform: scale(1); }
@@ -540,8 +1040,7 @@
       }
     `;
     document.head.appendChild(style);
-  '
-    </script>
-  </body>
-
+  </script>
+</body>
 </html>
+
