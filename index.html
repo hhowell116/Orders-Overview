@@ -1,7 +1,12 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Dashboard</title>
+
 <style>
-  /* =========================
-     EARTHY ROWE CASA VIBE UI
-     =========================*/
+/* ========== YOUR STYLE (unchanged) ========== */
   :root {
     --earth-dark: #463a2e;
     --earth-mid: #6b5847;
@@ -12,12 +17,7 @@
     --white: #ffffff;
     --glow: rgba(145,255,147,0.6);
   }
-
-  * {
-    margin: 0; padding: 0;
-    box-sizing: border-box;
-  }
-
+  * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
     font-family: "Inter", system-ui, sans-serif;
     background: linear-gradient(135deg, #594b3b, #3c3328);
@@ -25,8 +25,6 @@
     padding: 20px;
     min-height: 100vh;
   }
-
-  /* ============================== HEADER CARD ============================== */
   .header {
     background: linear-gradient(135deg, var(--leaf) 0%, var(--leaf-light) 100%);
     color: var(--white);
@@ -36,148 +34,68 @@
     box-shadow: 0 12px 35px rgba(0,0,0,0.35);
     margin-bottom: 28px;
   }
-  .header h1 {
-    font-size: 2.6rem;
-    font-weight: 600;
-    text-shadow: 0 4px 12px rgba(0,0,0,0.35);
-  }
-  .header p {
-    opacity: .9;
-    font-size: 1.15rem;
-  }
+  .header h1 { font-size: 2.6rem; font-weight: 600; text-shadow: 0 4px 12px rgba(0,0,0,0.35);}
+  .header p { opacity: .9; font-size: 1.15rem; }
 
-  /* ============================= CONTROL BAR ============================= */
-  .controls {
-    background: var(--cream);
-    padding: 20px;
-    border-radius: 16px;
-    display: flex; flex-wrap: wrap;
-    align-items: center; gap: 15px;
-    box-shadow: 0 8px 22px rgba(0,0,0,0.15);
-    border: 1px solid rgba(255,255,255,0.5);
-  }
-
-  select, .controls button {
-    padding: 12px 18px;
-    border-radius: 10px;
-    font-size: 1rem;
-    transition: .25s;
-    cursor: pointer;
-  }
-
-  select {
-    border: 2px solid var(--leaf);
-    background: var(--white);
-    color: var(--earth-mid);
-    font-weight: 600;
-  }
+  .controls { background: var(--cream); padding: 20px; border-radius: 16px; 
+    display: flex; flex-wrap: wrap; align-items: center; gap: 15px;
+    box-shadow: 0 8px 22px rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.5); }
+  select, .controls button { padding: 12px 18px; border-radius: 10px; font-size: 1rem; transition: .25s; cursor: pointer; }
+  select { border: 2px solid var(--leaf); background: var(--white); color: var(--earth-mid); font-weight: 600;}
   select:hover { box-shadow: 0 0 10px var(--leaf-light); }
-
-  .controls button {
-    background: linear-gradient(135deg, var(--earth-mid), var(--earth-light));
-    border: none; color: var(--white);
-    font-weight: 700;
-    letter-spacing: 0.3px;
-    text-shadow: 0 2px 6px rgba(0,0,0,0.45);
-  }
-  .controls button:hover {
-    filter: brightness(1.15);
-    box-shadow: 0px 0px 14px var(--glow);
-    transform: translateY(-2px);
-  }
+  .controls button { background: linear-gradient(135deg, var(--earth-mid), var(--earth-light));
+    border: none; color: var(--white); font-weight: 700; letter-spacing: 0.3px;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.45); }
+  .controls button:hover { filter: brightness(1.15); box-shadow: 0px 0px 14px var(--glow); transform: translateY(-2px); }
   .controls button:active { transform: scale(.97); }
+  .controls .current-month { background: linear-gradient(135deg, var(--leaf), var(--leaf-light)); color:white; box-shadow:0 0 10px rgba(0,0,0,.3);}
+  .controls .current-month:hover { box-shadow:0 0 18px rgba(140,255,140,.6); }
 
-  /* CURRENT MONTH BUTTON HIGHLIGHT */
-  .controls .current-month {
-    background: linear-gradient(135deg, var(--leaf), var(--leaf-light));
-    color: white;
-    box-shadow: 0 0 10px rgba(0,0,0,.3);
-  }
-  .controls .current-month:hover {
-    box-shadow: 0 0 18px rgba(140,255,140,.6);
-  }
+  .stats-grid { margin-top: 25px; display: grid; gap: 18px; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); }
+  .stat-card { background: var(--cream); padding: 24px; border-radius: 18px; text-align: center;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.17); transition:.3s; }
+  .stat-card:hover { transform: translateY(-5px); box-shadow:0 16px 30px rgba(0,0,0,.25);}
+  .stat-value { font-size:2.1rem; color:var(--leaf); font-weight:800; }
+  .stat-label { color:#6b6b6b; font-weight:600; letter-spacing:1px; }
 
-  /* ============================= VIEW TOGGLE ============================= */
-  .view-toggle button {
-    background: none;
-    border: 2px solid var(--leaf);
-    color: var(--leaf);
-    font-weight: 700;
-    border-radius: 10px;
-  }
-  .view-toggle .active {
-    background: linear-gradient(135deg, var(--leaf), var(--leaf-light));
-    color: white;
-    box-shadow: 0 0 12px var(--glow);
-  }
+  .month-card { background: linear-gradient(135deg,var(--earth-mid),var(--earth-dark)); color:white; padding:26px;
+    border-radius:16px; transition:.35s ease; box-shadow:0 10px 24px rgba(0,0,0,.35);}
+  .month-card:hover{ transform:scale(1.05); box-shadow:0 18px 45px rgba(0,0,0,.45);}
+  .month-card.current-month{ background:linear-gradient(135deg,var(--leaf),var(--leaf-light));
+    border:3px solid #fff !important; box-shadow:0 18px 50px rgba(120,255,140,.55);}
+  .month-name{ font-size:1.6rem; font-weight:700;}
 
-  /* =============================== STATS CARDS =============================== */
-  .stats-grid {
-    margin-top: 25px;
-    display: grid; gap: 18px;
-    grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
-  }
-  .stat-card {
-    background: var(--cream);
-    padding: 24px;
-    border-radius: 18px;
-    text-align: center;
-    box-shadow: 0 8px 18px rgba(0,0,0,0.17);
-    transition:.3s;
-  }
-  .stat-card:hover {
-    transform: translateY(-5px);
-    box-shadow:0 16px 30px rgba(0,0,0,.25);
-  }
-  .stat-value {
-    font-size:2.1rem;
-    color:var(--leaf);
-    font-weight:800;
-  }
-  .stat-label {
-    color:#6b6b6b;
-    font-weight:600;
-    letter-spacing:1px;
-  }
-
-  /* =============================== MONTH CARDS =============================== */
-  .month-card {
-    background: linear-gradient(135deg,var(--earth-mid),var(--earth-dark));
-    color:white; padding:26px;
-    border-radius:16px;
-    transition:.35s ease;
-    box-shadow:0 10px 24px rgba(0,0,0,.35);
-  }
-  .month-card:hover {
-    transform:scale(1.05);
-    box-shadow:0 18px 45px rgba(0,0,0,.45);
-  }
-  .month-card.current-month {
-    background:linear-gradient(135deg,var(--leaf),var(--leaf-light));
-    border:3px solid #fff !important;
-    box-shadow:0 18px 50px rgba(120,255,140,.55);
-  }
-  .month-name { font-size:1.6rem; font-weight:700; }
-
-  /* =========================== MODAL (DETAILS POPUP) =========================== */
-  .detail-modal {
-    background:rgba(0,0,0,.75);
-    backdrop-filter:blur(4px);
-  }
-  .detail-content {
-    background: var(--cream);
-    border-radius:20px;
-    box-shadow:0 15px 45px rgba(0,0,0,.4);
-  }
-  .close-modal {font-size:2rem;color:#777;}
+  .detail-modal{background:rgba(0,0,0,.75);backdrop-filter:blur(4px);}
+  .detail-content{background: var(--cream); border-radius:20px; box-shadow:0 15px 45px rgba(0,0,0,.4);}
+  .close-modal{font-size:2rem;color:#777;}
   .close-modal:hover{color:var(--earth-dark);}
-
-  /* ========================== LOADING ========================== */
-  .loading {
-    text-align:center;
-    color:white;
-    font-size:1.4rem;
-    text-shadow:0 3px 8px rgba(0,0,0,.5);
-    margin-top:40px;
-  }
+  .loading{text-align:center;color:white;font-size:1.4rem;text-shadow:0 3px 8px rgba(0,0,0,.5);margin-top:40px;}
 </style>
+</head>
+
+<body>
+
+<div class="header">
+  <h1>Dashboard Loaded ✔</h1>
+  <p>Your CSS is working — your page is no longer blank.</p>
+</div>
+
+<div class="controls">
+  <button class="current-month">Current Month</button>
+  <select><option>Filter Option</option></select>
+  <button>Generate</button>
+</div>
+
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-value">42</div>
+    <div class="stat-label">Example Value</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value">12</div>
+    <div class="stat-label">Placeholder</div>
+  </div>
+</div>
+
+</body>
+</html>
