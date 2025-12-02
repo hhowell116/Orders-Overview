@@ -782,25 +782,6 @@
     // Your Google Sheet ID
     const SHEET_ID = '1fuXYhSNqwFA7nB9k3Nqd_Epp1BV8ZYlTi9JRm98KtNU';
     
-    // Items to exclude from display
-    const EXCLUDED_ITEMS = [
-      'HEAT SENSITIVE INFO CARD',
-      '10% Off New Customer Card'
-    ];
-    
-    // Function to check if item should be excluded
-    function shouldExcludeItem(itemName) {
-      if (!itemName) return false;
-      return EXCLUDED_ITEMS.some(excluded => itemName.toLowerCase().includes(excluded.toLowerCase()));
-    }
-    
-    // Function to filter top product
-    function filterTopProduct(topProduct) {
-      if (!topProduct || topProduct === 'N/A') return topProduct;
-      if (shouldExcludeItem(topProduct)) return 'No qualifying products';
-      return topProduct;
-    }
-    
     let allData = [];
     let currentView = 'calendar';
     let chart = null;
@@ -835,7 +816,7 @@
             uniqueCustomers: row.c[5]?.v || 0,
             avgItemsPerOrder: row.c[6]?.v || 0,
             fulfillmentRate: row.c[7]?.v || '',
-            topProduct: filterTopProduct(row.c[8]?.v || 'N/A'),
+            topProduct: row.c[8]?.v || 'N/A',
             lastUpdated: row.c[9]?.v || ''
           }));
           
@@ -1162,4 +1143,3 @@
   </script>
 </body>
 </html>
-
