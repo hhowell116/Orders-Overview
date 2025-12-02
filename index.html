@@ -36,6 +36,7 @@
       box-shadow: 0 10px 30px rgba(0,0,0,0.2);
       margin-bottom: 20px;
       text-align: center;
+      border: 3px solid #a67c52;
     }
 
     @media (min-width: 768px) {
@@ -46,7 +47,7 @@
     }
 
     .header h1 {
-      color: #6b8e6f;
+      color: #a67c52;
       font-size: 1.5em;
       margin-bottom: 8px;
       line-height: 1.2;
@@ -80,6 +81,7 @@
       gap: 10px;
       align-items: center;
       flex-wrap: wrap;
+      border: 2px solid #a67c52;
     }
 
     @media (min-width: 768px) {
@@ -217,6 +219,7 @@
       border-radius: 10px;
       box-shadow: 0 5px 15px rgba(0,0,0,0.1);
       transition: transform 0.3s;
+      border: 2px solid #a67c52;
     }
 
     @media (min-width: 768px) {
@@ -231,11 +234,12 @@
     }
 
     .stat-label {
-      color: #666;
+      color: #a67c52;
       font-size: 0.75em;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       margin-bottom: 8px;
+      font-weight: 600;
     }
 
     @media (min-width: 768px) {
@@ -264,6 +268,7 @@
       border-radius: 15px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.2);
       display: none;
+      border: 3px solid #a67c52;
     }
 
     @media (min-width: 768px) {
@@ -292,7 +297,7 @@
     }
 
     .calendar-header h2 {
-      color: #333;
+      color: #a67c52;
       font-size: 1.3em;
     }
 
@@ -408,23 +413,25 @@
       padding: 15px;
       border-radius: 15px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
+      border: 3px solid #a67c52;
+      max-height: 600px;
+      overflow: hidden;
     }
 
     @media (min-width: 768px) {
       .chart-view {
         padding: 30px;
-        flex-direction: row;
-        align-items: flex-start;
+        display: grid;
+        grid-template-columns: 1fr 280px;
+        gap: 30px;
+        max-height: 550px;
       }
     }
 
     .chart-view h2 {
       font-size: 1.3em;
       margin-bottom: 15px;
-      color: #6b8e6f;
+      color: #a67c52;
     }
 
     @media (min-width: 768px) {
@@ -435,8 +442,10 @@
     }
 
     .chart-section {
-      flex: 1;
-      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      height: 100%;
     }
 
     .chart-stats-sidebar {
@@ -446,14 +455,16 @@
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 15px;
+      border: 2px solid #a67c52;
+      align-self: start;
     }
 
     @media (min-width: 768px) {
       .chart-stats-sidebar {
-        width: 280px;
-        flex-shrink: 0;
         grid-template-columns: 1fr;
         gap: 20px;
+        height: 100%;
+        align-content: start;
       }
     }
 
@@ -463,10 +474,11 @@
 
     .chart-stat-label {
       font-size: 0.8em;
-      color: #666;
+      color: #a67c52;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       margin-bottom: 8px;
+      font-weight: 600;
     }
 
     .chart-stat-value {
@@ -481,17 +493,16 @@
       }
     }
 
-    .chart-container {
-      width: 100%;
-      height: 300px;
-      margin-top: 15px;
+    .chart-wrapper {
       position: relative;
+      height: 300px;
+      width: 100%;
+      flex-shrink: 0;
     }
 
     @media (min-width: 768px) {
-      .chart-container {
-        height: 400px;
-        margin-top: 0;
+      .chart-wrapper {
+        height: 420px;
       }
     }
 
@@ -750,7 +761,9 @@
     <div id="chartView" class="chart-view" style="display: none;">
       <div class="chart-section">
         <h2>Monthly Orders Trends</h2>
-        <canvas id="ordersChart" class="chart-container"></canvas>
+        <div class="chart-wrapper">
+          <canvas id="ordersChart"></canvas>
+        </div>
       </div>
       <div id="chartStats" class="chart-stats-sidebar"></div>
     </div>
@@ -975,12 +988,21 @@
       
       if (view === 'calendar') {
         document.getElementById('calendarView').classList.add('active');
+        document.getElementById('calendarView').style.display = 'block';
         document.getElementById('chartView').style.display = 'none';
         document.querySelector('.view-btn:first-of-type').classList.add('active');
       } else {
         document.getElementById('calendarView').classList.remove('active');
+        document.getElementById('calendarView').style.display = 'none';
         document.getElementById('chartView').style.display = 'block';
         document.querySelector('.view-btn:last-of-type').classList.add('active');
+        
+        // Force chart to resize properly when switching views
+        if (chart) {
+          setTimeout(() => {
+            chart.resize();
+          }, 100);
+        }
       }
     }
 
