@@ -13,7 +13,7 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-      background: linear-gradient(135deg, #8b7355 0%, #6b5644 100%);
+      background: linear-gradient(135deg, #598f7f 0%, #4a7c6d 100%);
       padding: 10px;
       min-height: 100vh;
     }
@@ -46,7 +46,7 @@
     }
 
     .header h1 {
-      color: #8b7355;
+      color: #598f7f;
       font-size: 1.5em;
       margin-bottom: 8px;
       line-height: 1.2;
@@ -106,7 +106,7 @@
 
     .controls select, .controls button {
       padding: 10px 15px;
-      border: 2px solid #8b7355;
+      border: 2px solid #598f7f;
       border-radius: 8px;
       font-size: 0.9em;
       cursor: pointer;
@@ -130,16 +130,16 @@
     }
 
     .controls button {
-      background: #8b7355;
+      background: #598f7f;
       color: white;
       border: none;
       font-weight: 600;
     }
 
     .controls button:hover {
-      background: #6b5644;
+      background: #4a7c6d;
       transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(139, 115, 85, 0.3);
+      box-shadow: 0 5px 15px rgba(89, 143, 127, 0.3);
     }
 
     .controls button:active {
@@ -147,12 +147,12 @@
     }
 
     .controls button.current-month {
-      background: #a8956b;
-      border-color: #a8956b;
+      background: #89b09e;
+      border-color: #89b09e;
     }
 
     .controls button.current-month:hover {
-      background: #8b7355;
+      background: #598f7f;
     }
 
     .view-toggle {
@@ -173,8 +173,8 @@
     .view-btn {
       padding: 10px 15px;
       background: white;
-      border: 2px solid #8b7355;
-      color: #8b7355;
+      border: 2px solid #598f7f;
+      color: #598f7f;
       border-radius: 8px;
       cursor: pointer;
       transition: all 0.3s;
@@ -192,7 +192,7 @@
     }
 
     .view-btn.active {
-      background: #8b7355;
+      background: #598f7f;
       color: white;
     }
 
@@ -247,7 +247,7 @@
     }
 
     .stat-value {
-      color: #8b7355;
+      color: #598f7f;
       font-size: 1.8em;
       font-weight: bold;
     }
@@ -316,7 +316,7 @@
     }
 
     .month-card {
-      background: linear-gradient(135deg, #8b7355 0%, #6b5644 100%);
+      background: linear-gradient(135deg, #598f7f 0%, #4a7c6d 100%);
       color: white;
       padding: 20px;
       border-radius: 10px;
@@ -333,9 +333,9 @@
     }
 
     .month-card.current-month {
-      background: linear-gradient(135deg, #a8956b 0%, #8b7355 100%);
+      background: linear-gradient(135deg, #89b09e 0%, #6fa089 100%);
       border: 3px solid #fff;
-      box-shadow: 0 10px 30px rgba(168, 149, 107, 0.4);
+      box-shadow: 0 10px 30px rgba(137, 176, 158, 0.4);
     }
 
     .month-card.current-month .month-badge {
@@ -358,7 +358,7 @@
 
     .month-card:hover {
       transform: scale(1.05);
-      box-shadow: 0 15px 40px rgba(139, 115, 85, 0.4);
+      box-shadow: 0 15px 40px rgba(89, 143, 127, 0.4);
     }
 
     .month-card:active {
@@ -419,7 +419,7 @@
     .chart-view h2 {
       font-size: 1.3em;
       margin-bottom: 15px;
-      color: #8b7355;
+      color: #598f7f;
     }
 
     @media (min-width: 768px) {
@@ -433,6 +433,7 @@
       width: 100%;
       height: 300px;
       margin-top: 15px;
+      position: relative;
     }
 
     @media (min-width: 768px) {
@@ -532,7 +533,7 @@
     }
 
     .detail-header {
-      color: #8b7355;
+      color: #598f7f;
       font-size: 1.5em;
       margin-bottom: 15px;
       padding-right: 30px;
@@ -695,7 +696,7 @@
     </div>
 
     <div id="chartView" class="chart-view" style="display: none;">
-      <h2 style="color: #667eea; margin-bottom: 20px;">Monthly Orders Trends</h2>
+      <h2>Monthly Orders Trends</h2>
       <canvas id="ordersChart" class="chart-container"></canvas>
     </div>
   </div>
@@ -878,16 +879,16 @@
             {
               label: 'Orders Placed',
               data: ordersData,
-              borderColor: '#8b7355',
-              backgroundColor: 'rgba(139, 115, 85, 0.1)',
+              borderColor: '#598f7f',
+              backgroundColor: 'rgba(89, 143, 127, 0.1)',
               tension: 0.4,
               fill: true
             },
             {
               label: 'Orders Fulfilled',
               data: fulfilledData,
-              borderColor: '#a8956b',
-              backgroundColor: 'rgba(168, 149, 107, 0.1)',
+              borderColor: '#ad9579',
+              backgroundColor: 'rgba(173, 149, 121, 0.1)',
               tension: 0.4,
               fill: true
             }
@@ -989,7 +990,7 @@
       content.innerHTML = `
         <h2 class="detail-header">
           ${month.month} ${month.year}
-          ${isCurrentMonth ? '<span style="color: #a8956b; font-size: 0.6em; margin-left: 10px;">● CURRENT</span>' : ''}
+          ${isCurrentMonth ? '<span style="color: #89b09e; font-size: 0.6em; margin-left: 10px;">● CURRENT</span>' : ''}
         </h2>
         <div class="detail-grid">
           <div class="detail-item">
