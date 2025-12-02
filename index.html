@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,7 +13,7 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #8b7355 0%, #6b5644 100%);
       padding: 10px;
       min-height: 100vh;
     }
@@ -47,7 +46,7 @@
     }
 
     .header h1 {
-      color: #667eea;
+      color: #8b7355;
       font-size: 1.5em;
       margin-bottom: 8px;
       line-height: 1.2;
@@ -107,7 +106,7 @@
 
     .controls select, .controls button {
       padding: 10px 15px;
-      border: 2px solid #667eea;
+      border: 2px solid #8b7355;
       border-radius: 8px;
       font-size: 0.9em;
       cursor: pointer;
@@ -131,16 +130,16 @@
     }
 
     .controls button {
-      background: #667eea;
+      background: #8b7355;
       color: white;
       border: none;
       font-weight: 600;
     }
 
     .controls button:hover {
-      background: #5568d3;
+      background: #6b5644;
       transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+      box-shadow: 0 5px 15px rgba(139, 115, 85, 0.3);
     }
 
     .controls button:active {
@@ -148,12 +147,12 @@
     }
 
     .controls button.current-month {
-      background: #10b981;
-      border-color: #10b981;
+      background: #a8956b;
+      border-color: #a8956b;
     }
 
     .controls button.current-month:hover {
-      background: #059669;
+      background: #8b7355;
     }
 
     .view-toggle {
@@ -174,8 +173,8 @@
     .view-btn {
       padding: 10px 15px;
       background: white;
-      border: 2px solid #667eea;
-      color: #667eea;
+      border: 2px solid #8b7355;
+      color: #8b7355;
       border-radius: 8px;
       cursor: pointer;
       transition: all 0.3s;
@@ -193,7 +192,7 @@
     }
 
     .view-btn.active {
-      background: #667eea;
+      background: #8b7355;
       color: white;
     }
 
@@ -248,7 +247,7 @@
     }
 
     .stat-value {
-      color: #667eea;
+      color: #8b7355;
       font-size: 1.8em;
       font-weight: bold;
     }
@@ -317,7 +316,7 @@
     }
 
     .month-card {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #8b7355 0%, #6b5644 100%);
       color: white;
       padding: 20px;
       border-radius: 10px;
@@ -334,9 +333,9 @@
     }
 
     .month-card.current-month {
-      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      background: linear-gradient(135deg, #a8956b 0%, #8b7355 100%);
       border: 3px solid #fff;
-      box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
+      box-shadow: 0 10px 30px rgba(168, 149, 107, 0.4);
     }
 
     .month-card.current-month .month-badge {
@@ -359,7 +358,7 @@
 
     .month-card:hover {
       transform: scale(1.05);
-      box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+      box-shadow: 0 15px 40px rgba(139, 115, 85, 0.4);
     }
 
     .month-card:active {
@@ -420,6 +419,7 @@
     .chart-view h2 {
       font-size: 1.3em;
       margin-bottom: 15px;
+      color: #8b7355;
     }
 
     @media (min-width: 768px) {
@@ -532,7 +532,7 @@
     }
 
     .detail-header {
-      color: #667eea;
+      color: #8b7355;
       font-size: 1.5em;
       margin-bottom: 15px;
       padding-right: 30px;
@@ -833,6 +833,7 @@
       grid.innerHTML = '';
 
       data.forEach(month => {
+        // More robust current month check
         const isCurrentMonth = month.month === currentMonth && month.year === currentYear;
         
         const card = document.createElement('div');
@@ -853,6 +854,10 @@
         
         grid.appendChild(card);
       });
+      
+      // Debug log to check if current month exists
+      console.log(`Current Month: ${currentMonth} ${currentYear}`);
+      console.log('Available months:', data.map(d => `${d.month} ${d.year}`));
     }
 
     function renderChart(data) {
@@ -874,16 +879,16 @@
             {
               label: 'Orders Placed',
               data: ordersData,
-              borderColor: '#667eea',
-              backgroundColor: 'rgba(102, 126, 234, 0.1)',
+              borderColor: '#8b7355',
+              backgroundColor: 'rgba(139, 115, 85, 0.1)',
               tension: 0.4,
               fill: true
             },
             {
               label: 'Orders Fulfilled',
               data: fulfilledData,
-              borderColor: '#10b981',
-              backgroundColor: 'rgba(16, 185, 129, 0.1)',
+              borderColor: '#a8956b',
+              backgroundColor: 'rgba(168, 149, 107, 0.1)',
               tension: 0.4,
               fill: true
             }
@@ -930,15 +935,14 @@
         switchView('calendar');
       }
       
-      // Reset year filter to show current year
+      // Reset year filter to show all or current year
       const yearFilter = document.getElementById('yearFilter');
       if (yearFilter.value !== 'all' && yearFilter.value != currentYear) {
-        yearFilter.value = currentYear;
-        // Trigger the filter change to re-render with current year
-        const filtered = allData.filter(d => d.year == currentYear);
-        renderStats(filtered);
-        renderCalendar(filtered);
-        renderChart(filtered);
+        yearFilter.value = 'all'; // Switch to 'all' to ensure current month is visible
+        // Trigger the filter change to re-render with all data
+        renderStats(allData);
+        renderCalendar(allData);
+        renderChart(allData);
       }
       
       // Small delay to ensure rendering is complete
@@ -954,7 +958,25 @@
             currentCard.style.animation = '';
           }, 500);
         } else {
-          alert(`Current month (${currentMonth} ${currentYear}) not found in data. Try refreshing!`);
+          // If still not found, try switching to current year specifically
+          yearFilter.value = currentYear;
+          const filtered = allData.filter(d => d.year == currentYear);
+          renderStats(filtered);
+          renderCalendar(filtered);
+          renderChart(filtered);
+          
+          setTimeout(() => {
+            const retryCard = document.getElementById(`month-${currentMonth}-${currentYear}`);
+            if (retryCard) {
+              retryCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              retryCard.style.animation = 'pulse 0.5s ease-in-out';
+              setTimeout(() => {
+                retryCard.style.animation = '';
+              }, 500);
+            } else {
+              alert(`Current month (${currentMonth} ${currentYear}) not found in data. Please run "Pull 2025 Q3-Q4 (Jul-Dec)" to add December 2025.`);
+            }
+          }, 100);
         }
       }, 100);
     }
@@ -968,7 +990,7 @@
       content.innerHTML = `
         <h2 class="detail-header">
           ${month.month} ${month.year}
-          ${isCurrentMonth ? '<span style="color: #10b981; font-size: 0.6em; margin-left: 10px;">● CURRENT</span>' : ''}
+          ${isCurrentMonth ? '<span style="color: #a8956b; font-size: 0.6em; margin-left: 10px;">● CURRENT</span>' : ''}
         </h2>
         <div class="detail-grid">
           <div class="detail-item">
@@ -1043,4 +1065,3 @@
   </script>
 </body>
 </html>
-
